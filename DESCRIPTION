@@ -1,0 +1,15 @@
+Package: shinyStar
+Type: Package
+Title: asyr
+Version: 0.0.4
+Date: 2017-0807
+Author: J.Arsenault
+Maintainer: Who to complain to <JARS3N@GMAIL.COM>
+Description: asyr tools
+URL: https://github.com/JARS3N/asyr
+License: What license is it under?
+Imports:
+      shiny,
+      RMySQL
+Encoding: UTF-8
+LazyData: true
