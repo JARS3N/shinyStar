@@ -12,7 +12,7 @@ shinyServer(function(input,output,session) {
   })
   stuffHappens<-  observeEvent(input$EXP,
                                {fldr<-choose.dir()
-                               PipeFish::Outandsave(fldr)
+                               xprt::asyr_to_xl(fldr)
                                output$session <- renderText("Script Complete")
                                })
 })
