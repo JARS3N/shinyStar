@@ -1,6 +1,7 @@
 
 library(shiny)
 library(PipeFish)
+library(xprt)
 
 shinyServer(function(input, output, session) {
 
@@ -17,7 +18,7 @@ shinyServer(function(input, output, session) {
   observe({
     if(input$BB > 0 ){
       DIR<-choose.dir()
-      if(input$CB==TRUE){PipeFish::Outandsave(DIR);DIR<-file.path(DIR,'export')}
+      if(input$CB==TRUE){xprt::asyr_to_xl(DIR);DIR<-file.path(DIR,'export')}
       DF<-OLgrbs(DIR)
       svpth<-file.path(DIR,paste0(input$expnm,".csv"))
       output$session <- renderText(svpth)
