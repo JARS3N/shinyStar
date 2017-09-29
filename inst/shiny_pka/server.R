@@ -1,9 +1,7 @@
 library(shiny)
 library(asyr)
-#library(PipeFish)
-#library(dplyr)
-#library(rio)
 library(rmarkdown)
+library(xprt)
 shinyServer(function(input, output, session) {
 
   session$onSessionEnded(function() {
@@ -17,7 +15,7 @@ shinyServer(function(input, output, session) {
   observe({
     if(input$BB > 0 ){
       DIR<-choose.dir()
-      if(input$CB==TRUE){PipeFish::torquemada(DIR)}
+      if(input$CB==TRUE){xprt::xfd_to_asyr(DIR)}
       asyr::asyr_pKa(input$pHFluor,input$MFBatch,input$Platform,DIR)
     }
   })
