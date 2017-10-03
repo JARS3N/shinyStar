@@ -1,6 +1,6 @@
 UploadDRYQC <- function() {
   require(shiny)
-  require(PipeFish)
+  #require(PipeFish)
   require(miniUI)
   library(RMySQL)
   
@@ -20,7 +20,7 @@ UploadDRYQC <- function() {
                                  if(grepl("xls",IN$name)){
                                    DF<-loadQCstats(IN$datapath)
                                    if(nrow(DF)>1){
-                                     my_db <- rmysqlCon()
+                                     my_db <-  adminKraken::con_mysql()
                                      dbWriteTable(my_db, name="dryqcxf24",value=DF,
                                                   append=TRUE,overwrite = FALSE,row.names=FALSE)
                                      dbDisconnect(my_db)
