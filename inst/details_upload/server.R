@@ -1,6 +1,6 @@
 ### look for sns of lot in DB
 checkforDBPresence<-function(u){
-  conn<- PipeFish::rmysqlCon()
+  conn<- adminKraken::con_mysql()
   qry_str<-paste0('select DISTINCT(sn) from mvdata where Lot="',u,'";')
   qry<-dbSendQuery(conn,qry_str)
   qry_res<-dbFetch(qry)
@@ -10,7 +10,7 @@ checkforDBPresence<-function(u){
 }
 ###### write data.frame to database
 writeDFtoDB <-function(DATA){
-  con <-PipeFish::rmysqlCon()
+  con <- adminKraken::con_mysql()
   dbWriteTable(con, name="machinevisiondata",value= DATA,
                append=TRUE,overwrite = FALSE,row.names=FALSE)
   message("wrote to table")
