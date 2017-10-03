@@ -3,8 +3,7 @@ library(shiny)
 library(PipeFish)
 library(RMySQL)
 library(openxlsx)
-#ConnectInfo<-DataStash::Triton()
-conn<-PipeFish::rmysqlCon()
+conn<- adminKraken::con_mysql()
 query<-paste0("SELECT DISTINCT(Lot_Num) from barcodelotview;")
 send<-dbSendQuery(conn,query)
 Lots<-dbFetch(send)
@@ -26,7 +25,7 @@ shinyServer(function(input, output,session) {
 
     q_str<-paste0('SELECT * from barcodelotview where Lot_Num_Input="',lotn,
                   '" AND Cart_type="',lotl,'" ORDER BY Serial_Num;')
-    conn<-PipeFish::rmysqlCon()
+    conn<- adminKraken::con_mysql()
     q<-dbSendQuery(conn,q_str)
     DF<-dbFetch(q)
     dbDisconnect(conn)
