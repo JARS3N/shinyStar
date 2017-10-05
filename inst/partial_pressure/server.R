@@ -1,6 +1,7 @@
   library(shiny)
   library(ggplot2)
   library(ggthemes)
+  library(outliers)
   shinyServer(function(input, output) {
       
       output$distPlot <- renderPlot({
@@ -17,7 +18,8 @@
           theme_bw()+
           ylab('mmHg')+
           xlab('Temp(C)')+
-          geom_text(aes(x=input$TMP,y=outliers::partial_pressure_ox(input$TMP,input$ATM),label=round(outliers::partial_pressure_ox(input$TMP,input$ATM),3)),vjust = -0.6,
+          geom_text(aes(x=input$TMP,y=outliers::partial_pressure_ox(input$TMP,input$ATM),
+                        label=round(outliers::partial_pressure_ox(input$TMP,input$ATM),3)),vjust = -0.6,
                     family = "Times New Roman",size=10)+
           ylim(c(min(selectedData()$PP),max(selectedData()$PP)+1))
       })
