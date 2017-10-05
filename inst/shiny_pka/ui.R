@@ -1,7 +1,7 @@
 library(shiny)
 
 shinyUI(fluidPage(
-  titlePanel("PipeFish::pKa from asyr files"),
+  titlePanel("seastar::pKa from asyr files"),
   br(),
   mainPanel(
     textInput('pHFluor',"pH Fluorophore", value = "Fluorophore_Validation_pKa", width = NULL),
