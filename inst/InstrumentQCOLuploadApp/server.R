@@ -3,6 +3,6 @@ require(PipeFish)
 library(shiny)
 shinyServer(function(input, output) {
   observeEvent(input$UploadData, {
-    PipeFish::uploadInstQCOL()
+    outliers::upload_qc()
   })
 })
