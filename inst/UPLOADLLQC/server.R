@@ -7,13 +7,13 @@ shinyServer(function(input, output,session) {
   observeEvent(input$send,{
     print("ok")
     dir <- choose.dir()
-    if(input$CB==TRUE){PipeFish::XLSXos(dir)}
+    if(input$CB==TRUE){xprt::asyr_to_xl(dir)}
     if (!is.na(dir)) {
       fls<-list.files(path=dir,full.names = T,pattern = 'xlsx')
       lapply(
         lapply(fls,
-               PipeFish::mungeLL),
-        PipeFish::UPLOADLL
+               lightleak::munge),
+        lightleak::upload
         )
       message("complete")
     }else{
