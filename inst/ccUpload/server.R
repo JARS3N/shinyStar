@@ -22,14 +22,19 @@ shinyServer(function(input, output,session) {
       output$MSG <- renderText("Munging Data...")
 
       DF<- do.call('rbind',
-        lapply(
-        lapply(
-        asyr::intermediateStep(
-                  list.files(path=DIR,pattern='asyr',full.names=TRUE)
-              ),
-        asyr::process),
-        asyr::extract_wetQC
+                   lapply(
+                     lapply(
+                       lapply(
+                         list.files(path=DIR,pattern='asyr',full.names=TRUE),
+                         XML::xmlTreeParse,
+                         useInternalNodes=T
+                       ),
+                       asyr::process
+                       ),
+                     asyr::extract_wetQC
+                   )
       )
+    
 
       output$DF<-shiny::renderDataTable(DF)
       output$MSG <- renderText("Communicating with Database")
