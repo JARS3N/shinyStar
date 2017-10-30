@@ -42,3 +42,4 @@ shinyServer(function(input, output,session) {
       asyr::UploadsCC(DF)
       output$MSG <- renderText("Complete")
     }})
+})
