@@ -1,12 +1,14 @@
 
   require(shiny)
 
-  miniPage(fluidPage(
-    p("Add QCStats from DryQC to Database"),mainPanel(
+  fluidPage(
+    p("Add QCStats from DryQC to Database"),
+    mainPanel(
       fileInput("file", label = "QCStats input"),
       actionButton("EXP", "Enter"),
       textOutput("session"),
-      actionButton("DONE", "DONE"))
-  ))
+      actionButton("DONE", "DONE")
+    )
+  )
   
   
