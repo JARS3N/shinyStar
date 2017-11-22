@@ -1,6 +1,6 @@
 require(shiny)
   require(dryqc)
-  require(miniUI)
+  #require(miniUI)
   library(RMySQL)
   
 
