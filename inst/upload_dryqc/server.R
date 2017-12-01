@@ -9,7 +9,7 @@ function(input,output,session) {
                                {
                                  IN<-fixShinyFileInput(input$file)
                                  if(grepl("xls",IN$name)){
-                                   DF<-loadQCstats(IN$datapath)
+                                   DF<-load_qc_stats(IN$datapath)
                                    if(nrow(DF)>1){
                                      my_db <- con_mysql()
                                      dbWriteTable(my_db, name="dryqcxf24",value=as.data.frame(DF),
