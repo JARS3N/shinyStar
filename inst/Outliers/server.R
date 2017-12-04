@@ -18,7 +18,7 @@ shinyServer(function(input, output, session) {
     if(input$BB > 0 ){
       DIR<-choose.dir()
       if(input$CB==TRUE){xprt::asyr_to_xl(DIR);DIR<-file.path(DIR,'export')}
-      DF<-OLgrbs(DIR)
+      DF<-outliers::grab_many(DIR)
       svpth<-file.path(DIR,paste0(input$expnm,".csv"))
       output$session <- renderText(svpth)
       output$test1 <- renderTable({DF})
