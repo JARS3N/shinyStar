@@ -1,5 +1,5 @@
 library(shiny)
-library(PipeFish)
+library(lightleak)
 shinyServer(function(input, output,session) {
   session$onSessionEnded(function() {
     stopApp()
