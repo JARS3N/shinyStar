@@ -47,7 +47,7 @@ shinyServer(function(input, output, session) {
       DATA <- lapply(procd, extract_wetQC)
       output$foo2 <- DT::renderDataTable(do.call('rbind', DATA))
       sum_tbl <- asyr::process_summary(procd)
-      sum_tbl <<- sum_tbl[order(sum_tbl$sn, method = 'radix'),]
+      sum_tbl <- sum_tbl[order(sum_tbl$sn, method = 'radix'),]
       if (exists('sum_tbl')) {
         sum_tbl$use <- T
         output$foo <- DT::renderDataTable(
