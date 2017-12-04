@@ -1,33 +1,41 @@
 ---
-title: pKa analysis for XLOTX
+  title: pKa analysis for XLOTX
 output: pdf_document
 ---
-
-========================================================  
-MF batch:  XBATCHX  
+  
+  ========================================================  
+  MF batch:  XBATCHX  
 ```{r Munge,echo=FALSE,dev='CairoPDF',warning=FALSE,message=FALSE,results='hide'}
 library(knitr)
 library(dplyr)
 library(ggplot2)
 library(gridExtra)
 library(ggthemes)
+
 data<-rio::import('data.csv')
-models<-lapply(split(data,data$dye),function(x){nls(counts ~ SSfpl(pH, Bottom, Top, pKa, Slope), x)})
-model.names<-models  %>% {names(.) %>% split(.,.)}
-pHvals <- seq(min(data$pH), max(data$pH), length.out=150) 
-linedata<-model.names %>% 
-  lapply(.,{.  %>%  
+models<-lapply(split(data,data$dye),
+               function(x){nls(counts ~ SSfpl(pH, Bottom, Top, pKa, Slope), x)})
+
+model.names<-split(names(models),names(models))
+
+pHvals <- seq(min(data$pH), max(data$pH), length.out=150)
+
+linedata<- lapply(model.names,{.  %>%  
       models[[.]]  %>% 
       predict(.,data.frame(pH=pHvals)) %>% 
       .[1:150]})
-titrlines<-lapply(model.names,{.  %>% data.frame(val=linedata[[.]],dye=.,pH=pHvals)}) %>% bind_rows()
+
+titrlines<-lapply(model.names,{.  %>% data.frame(val=linedata[[.]],dye=.,pH=pHvals)}) %>% 
+  bind_rows()
+
 cols <- c("CL" = "cornflowerblue","PR" = "red")
 
-titrPlot<-ggplot(data,aes(x=pH,y=counts,colour=dye,fill=dye))+geom_jitter(aes(fill=dye),size=2,shape=16,alpha=.7)+
-geom_line(data=titrlines,aes(x=pH,y=val,colour=dye))+
-theme_few()+ggtitle('Titration Curve')+
-guides(colour = FALSE,fill=FALSE) +
-scale_colour_manual(values = cols)
+titrPlot<-ggplot(data,aes(x=pH,y=counts,colour=dye,fill=dye))+
+  geom_jitter(aes(fill=dye),size=2,shape=16,alpha=.7)+
+  geom_line(data=titrlines,aes(x=pH,y=val,colour=dye))+
+  theme_few()+ggtitle('Titration Curve')+
+  guides(colour = FALSE,fill=FALSE) +
+  scale_colour_manual(values = cols)
 
 
 ## lines for effective range
@@ -36,20 +44,24 @@ max10<-function(z){max(z) - ((max(z) - min(z))/10)}
 LowLine<-function(u){b<-min10(u);which(abs(u - b) == min(abs(u - b)))}
 HighLine<-function(u){b<-max10(u);which(abs(u - b) == min(abs(u - b)))}
 #
-pH.index<-c(lapply(linedata,LowLine),lapply(linedata,HighLine)) %>% Reduce('rbind',x=.)
+pH.index<- do.call('rbind',x=c(lapply(linedata,LowLine),lapply(linedata,HighLine)))
 
 EfRange<-data.frame(vline=pHvals[pH.index],dye=factor(c('CL','PR')))
 
- gainData<-models %>% 
-   names(.) %>% 
-   split(.,.) %>% 
-    lapply(.,{. %>%
-  data.frame(gain=diff(linedata[[.]][1:150])/diff(pHvals)/1000,pH=pHvals[-1],dye=.)}) %>% 
-    bind_rows() %>%
-    mutate(.data=.,dye=factor(dye))
+gainData<-
+  split(names(models),names(models)) %>% 
+  lapply(.,function(j){
+      data.frame(gain=diff(linedata[[.]][1:150])/diff(pHvals)/1000,pH=pHvals[-1],dye=j)
+    }) %>% 
+  bind_rows() %>%
+  mutate(.data=.,dye=factor(dye))
 
 
-gain_plot<-ggplot(gainData,aes(x=pH,y=gain,colour=dye)) + geom_line(size=2) +theme_few() +ggtitle('Gain Curve') + geom_vline(data=EfRange,aes(xintercept=vline,colour=dye),linetype = 'dotted')+scale_colour_manual(values = cols)
+gain_plot<-ggplot(gainData,aes(x=pH,y=gain,colour=dye)) + geom_line(size=2) +
+  theme_few() +
+  ggtitle('Gain Curve') + 
+  geom_vline(data=EfRange,aes(xintercept=vline,colour=dye),linetype = 'dotted')+
+  scale_colour_manual(values = cols)
 ```
 ```{r plots,echo=FALSE,warning=FALSE,message=FALSE,fig.width=14,fig.height=6,dev='CairoPDF',fig.cap=''}
 grid.arrange(titrPlot,gain_plot, nrow=1, ncol=2,top='pKA')
@@ -66,13 +78,13 @@ EfRange$dye<-fix[EfRange$dye]
 ## Clear pKa information
 ```{r Clear pKa information,echo=FALSE,warning=FALSE,message=FALSE}
 Clear.V50<-cbind(signif(summary(models[['CL']])$parameters,digits=5),
-signif(confint(models[['CL']]),digits=4))
+                 signif(confint(models[['CL']]),digits=4))
 ```
 `r kable(Clear.V50,format='markdown')`
 
 ## Phenol Red pKa information
 ```{r Phenol Red pKa information,echo=FALSE,warning=FALSE,message=FALSE}
 Phenol.Red.V50<-cbind(signif(summary(models[['PR']])$parameters,digits=5),
-signif(confint(models[['PR']]),digits=4))
+                      signif(confint(models[['PR']]),digits=4))
 ```
 `r kable(Phenol.Red.V50,format='markdown')`
