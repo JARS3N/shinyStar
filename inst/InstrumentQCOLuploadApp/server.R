@@ -1,5 +1,4 @@
-require(shiny)
-require(PipeFish)
+library(outliers)
 library(shiny)
 shinyServer(function(input, output) {
   observeEvent(input$UploadData, {
