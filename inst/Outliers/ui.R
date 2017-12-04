@@ -1,7 +1,7 @@
 library(shiny)
 
 shinyUI(fluidPage(
-  titlePanel("PipeFish::Outliers"),
+  titlePanel("Outliers"),
   br(),
   mainPanel(
     textInput('expnm',"Name of Experiment", value = "OutlierAnalysis", width = NULL),
