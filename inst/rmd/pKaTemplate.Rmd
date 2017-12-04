@@ -1,32 +1,32 @@
 ---
-  title: pKa analysis for XLOTX
+title: pKa analysis for XLOTX
 output: pdf_document
 ---
   
-  ========================================================  
-  MF batch:  XBATCHX  
+  ========================================================
+  MF batch:  XBATCHX
 ```{r Munge,echo=FALSE,dev='CairoPDF',warning=FALSE,message=FALSE,results='hide'}
 library(knitr)
-library(dplyr)
 library(ggplot2)
 library(gridExtra)
 library(ggthemes)
 
-data<-rio::import('data.csv')
+data<-read.csv('data.csv',stringsAsFactors = F)
 models<-lapply(split(data,data$dye),
                function(x){nls(counts ~ SSfpl(pH, Bottom, Top, pKa, Slope), x)})
 
-model.names<-split(names(models),names(models))
+model_names<-split(names(models),names(models))
 
 pHvals <- seq(min(data$pH), max(data$pH), length.out=150)
 
-linedata<- lapply(model.names,{.  %>%  
-      models[[.]]  %>% 
-      predict(.,data.frame(pH=pHvals)) %>% 
-      .[1:150]})
+linedata<- lapply(model_names,function(u){
+  predict(models[[u]],data.frame(pH=pHvals))[1:150]})
 
-titrlines<-lapply(model.names,{.  %>% data.frame(val=linedata[[.]],dye=.,pH=pHvals)}) %>% 
-  bind_rows()
+titrlines <- do.call('rbind',
+                     lapply(model_names,
+                            function(u) {
+                              data.frame(val = linedata[[u]], dye = u, pH = pHvals)
+                            }))
 
 cols <- c("CL" = "cornflowerblue","PR" = "red")
 
@@ -44,30 +44,28 @@ max10<-function(z){max(z) - ((max(z) - min(z))/10)}
 LowLine<-function(u){b<-min10(u);which(abs(u - b) == min(abs(u - b)))}
 HighLine<-function(u){b<-max10(u);which(abs(u - b) == min(abs(u - b)))}
 #
-pH.index<- do.call('rbind',x=c(lapply(linedata,LowLine),lapply(linedata,HighLine)))
+pH.index<- do.call('rbind',c(lapply(linedata,LowLine),lapply(linedata,HighLine)))
 
 EfRange<-data.frame(vline=pHvals[pH.index],dye=factor(c('CL','PR')))
 
-gainData<-
-  split(names(models),names(models)) %>% 
-  lapply(.,function(j){
-      data.frame(gain=diff(linedata[[.]][1:150])/diff(pHvals)/1000,pH=pHvals[-1],dye=j)
-    }) %>% 
-  bind_rows() %>%
-  mutate(.data=.,dye=factor(dye))
+gainData<-do.call('rbind',lapply(model_names,function(j){
+  data.frame(gain=diff(linedata[[j]][1:150])/diff(pHvals)/1000,pH=pHvals[-1],dye=j)
+})
+)
+gainData$dye<-factor(gainData$dye)
 
 
 gain_plot<-ggplot(gainData,aes(x=pH,y=gain,colour=dye)) + geom_line(size=2) +
   theme_few() +
-  ggtitle('Gain Curve') + 
+  ggtitle('Gain Curve') +
   geom_vline(data=EfRange,aes(xintercept=vline,colour=dye),linetype = 'dotted')+
   scale_colour_manual(values = cols)
 ```
 ```{r plots,echo=FALSE,warning=FALSE,message=FALSE,fig.width=14,fig.height=6,dev='CairoPDF',fig.cap=''}
 grid.arrange(titrPlot,gain_plot, nrow=1, ncol=2,top='pKA')
-```  
+```
 
-## Effective range  
+## Effective range
 ```{r Effective range,echo=FALSE,warning=FALSE,message=FALSE}
 EfRange$stat<-c(rep('Low.pH',2),rep('High.pH',2))
 fix<-c('CL'='Clear','PR'='Phenol Red')
