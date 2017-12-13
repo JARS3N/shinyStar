@@ -2,6 +2,7 @@ library(shiny)
 library(RMySQL)
 library(asyr)
 library(XML)
+library(DT)
 #library(shinyjs)
 
 
@@ -96,10 +97,19 @@ shinyServer(function(input, output, session) {
 
         OUT <- do.call('rbind', DATA_2)
         OUT <- OUT[order(OUT$sn, OUT$Well, method = 'radix'), ]
-        names <-
-          paste0(DIR, "\\", "WetQC_Lot_", unique(OUT$Lot), ".csv")
-        write.csv(OUT, names, row.names = F)
-        saveRDS(procd, paste0(DIR, "\\", "WetQC_Lot_", unique(OUT$Lot), ".rds"))
+        # export name
+        export_names<-
+          setNames(
+          paste0(
+          paste0(DIR, "\\", "WetQC_Lot_",paste0(unique(OUT$Lot),collapse="_")),
+          c(".csv",".rds")
+          ),
+          c('csv','rds')
+          )
+
+        # if there is more than ne lot it will collapse them with '_'
+        write.csv(OUT,export_names['csv'], row.names = F)
+        saveRDS(procd, export_names['rds'])
       })
       # END ---observeEvent export csv
 
