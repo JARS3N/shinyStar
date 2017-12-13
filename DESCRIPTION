@@ -1,7 +1,7 @@
 Package: shinyStar
 Type: Package
 Title: shinyStar
-Version: 0.0.11
+Version: 0.0.12
 Date: 2017-0807
 Author: J.Arsenault
 Maintainer: Who to complain to <JARS3N@GMAIL.COM>
@@ -10,6 +10,8 @@ URL: https://github.com/JARS3N/shinyStar
 License: What license is it under?
 Imports:
       shiny,
-      RMySQL
+      RMySQL,
+      shinyjs,
+      DT
 Encoding: UTF-8
 LazyData: true
