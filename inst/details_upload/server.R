@@ -11,12 +11,10 @@ shinyServer(function(input, output,session) {
     message("pulled data from details.xml files")
 
     inDat <-unique(DAT$Lot)
-    # inDB is vector of unique combinations of lot_sn
-    inDB<- details::check_presence(inDat)
-
     status2<-paste0("checking for ",inDat  ," and related sn in database")
     output$status2<-renderText({status2})
     message(status2)
+    # inDB is vector of unique combinations of lot_sn
     inDB<- details::check_presence(inDat)
     if(nrow(inDB)==0){
 
