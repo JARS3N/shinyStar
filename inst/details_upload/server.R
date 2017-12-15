@@ -1,25 +1,3 @@
-### look for sns of lot in DB
-checkforDBPresence<-function(u){
-  conn<- adminKraken::con_mysql()
-  qry_str<-paste0('select DISTINCT(sn) from mvdata where Lot="',u,'";')
-  qry<-dbSendQuery(conn,qry_str)
-  qry_res<-dbFetch(qry)
-  dbDisconnect(conn)
-  qry_res$Lot<-u
-  qry_res
-}
-###### write data.frame to database
-writeDFtoDB <-function(DATA){
-  con <- adminKraken::con_mysql()
-  dbWriteTable(con, name="mvdata",value= DATA,
-               append=TRUE,overwrite = FALSE,row.names=FALSE)
-  message("wrote to table")
-  dbDisconnect(con)
-  message("disconnect")
-}
-
-##### APP BELOW
-
 library(RMySQL)
 shinyServer(function(input, output,session) {
   output$status<-renderText('Waiting')
@@ -29,23 +7,23 @@ shinyServer(function(input, output,session) {
 
   observeEvent(input$SelectDir,{
     output$status<-renderText('...working')
-    DATA <- asyr::parse_dirOfDetails
+    DATA <- details::parse_directory()
     message("pulled data from details.xml files")
 
     inDat <-unique(DAT$Lot)
     # inDB is vector of unique combinations of lot_sn
-    inDB<- checkforDBPresence(inDat)
+    inDB<- details::check_presence(inDat)
 
     status2<-paste0("checking for ",inDat  ," and related sn in database")
     output$status2<-renderText({status2})
     message(status2)
-    inDB<- checkforDBPresence(inDat)
+    inDB<- details::check_presence(inDat)
     if(nrow(inDB)==0){
 
       status3<- paste0(inDat," new to database")
       output$status3<-renderText(status3)
       message(status3)
-      writeDFtoDB(DATA)
+      details::write(DATA)
     }else{
       FIN<-DATA[!mapply(
         `&&`,
@@ -56,7 +34,7 @@ shinyServer(function(input, output,session) {
       ]
       if(nrow(FIN)>0){
 
-        writeDFtoDB(DATA[newCtgs,])
+        details::write(DATA[newCtgs,])
         status4<-paste0(inDat," completed to database")
         output$status4<-renderText("Nothing new to Upload")
       }else{
