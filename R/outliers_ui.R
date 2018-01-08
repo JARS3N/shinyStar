@@ -1,5 +1,5 @@
 
-outliers_ui<function(){
+outliers_ui<-function(){
 require(shiny)
 
     shinyUI(fluidPage(
