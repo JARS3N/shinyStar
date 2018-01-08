@@ -1,5 +1,5 @@
 
-upload_lightleak_qc<-function(){
+upload_lightleak_qc_server<-function(){
 
    require(shiny)
      require(lightleak)
