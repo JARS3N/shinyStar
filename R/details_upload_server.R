@@ -1,6 +1,6 @@
 
 details_upload_server<-function(){
-
+require(shiny)
 
       library(RMySQL)
       shinyServer(function(input, output,session) {
