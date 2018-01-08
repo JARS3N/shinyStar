@@ -1,5 +1,5 @@
 
-dryqc_uploar_server<-function(){
+dryqc_upload_server<-function(){
 
       require(shiny)
       require(dryqc)
