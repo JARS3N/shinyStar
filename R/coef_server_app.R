@@ -1,5 +1,5 @@
 coef_server_app<-function(){
-
+require(shiny)
 require(seastar)
 require(asyr)
 require(dplyr)
