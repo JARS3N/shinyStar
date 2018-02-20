@@ -22,6 +22,12 @@ coef_server_app<-function(){
       #########
       if(substr(lot_used,1,1)=="C"){
 
+        xls<-list.files(path=seldir,full.names=T,pattern='xlsx')
+        xl<-setNames(lapply(xls,readxl::read_excel,sheet='Resume'),
+                     xls) %>%
+        bind_rows(.,.id='files')
+        
+        
         pH_led_table<-
           filter(xl,Tick=='Calibration') %>%
           group_by(.,Emission) %>%
