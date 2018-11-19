@@ -8,5 +8,10 @@ Maintainer: Who to complain to <JARS3N@GMAIL.COM>
 Description: shiny apps for seastar
 URL: https://github.com/JARS3N/shinyStar
 License: What license is it under?
+Imports:
+      shiny,
+      RMySQL,
+      shinyjs,
+      DT
 Encoding: UTF-8
 LazyData: true
