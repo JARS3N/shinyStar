@@ -29,10 +29,6 @@ pKa_server<-function() {
     
     observeEvent(input$filein, {
       unlink(list.files(pattern = "temp.pdf$|Rmd$|csv$"))
-      Dat <- sort_pka_data(input$filein$datapath,
-                           input$filein$names,
-                           input$pHFluor,
-                           input$MFBatch)
     })
     
     output$BB <- downloadHandler(
@@ -45,6 +41,10 @@ pKa_server<-function() {
                "_pka.pdf")
       },
       content = function(file) {
+        Dat <- sort_pka_data(input$filein$datapath,
+                           input$filein$names,
+                           input$pHFluor,
+                           input$MFBatch)
         write.csv(Dat, "data.csv")
         template <-
           readLines(system.file("rmd/pKaTemplate.Rmd", package = "shinyStar"))
