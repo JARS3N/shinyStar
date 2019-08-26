@@ -45,6 +45,9 @@ pKa_server<-function() {
                            input$filein$names,
                            input$pHFluor,
                            input$MFBatch)
+        cat("does Dat(a) exist?: ")
+        print(exists('Dat'))
+        print(head(Dat))
         write.csv(Dat, "data.csv")
         template <-
           readLines(system.file("rmd/pKaTemplate.Rmd", package = "shinyStar"))
