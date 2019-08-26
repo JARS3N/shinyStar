@@ -30,7 +30,6 @@ pKa_server<-function() {
     
     observeEvent(input$filein, {
       unlink(list.files(pattern = "temp.pdf$|Rmd$|csv$"))
-      rm(D)
               D$Dat <- sort_pka_data(input$filein$datapath,
                            input$filein$names,
                            input$pHFluor,
@@ -62,6 +61,7 @@ pKa_server<-function() {
                    con =  "temp.Rmd",
                    sep = "\n")
         rmarkdown::render("temp.Rmd", output_file = file)
+        rm(D)
       }
     )
     
