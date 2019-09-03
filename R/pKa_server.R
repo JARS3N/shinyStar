@@ -60,9 +60,9 @@ pKa_server <- function() {
         writeLines(text = alt_tempalte,
                    con =  "temp.Rmd",
                    sep = "\n")
-        #rmarkdown::render("temp.Rmd", output_file = file)
+        rmarkdown::render("temp.Rmd", output_file = file)
         # rm(K)
-        write.csv(mtcars,file,row.names=F)
+      
       }
     )
     
