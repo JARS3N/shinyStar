@@ -1,5 +1,5 @@
-pKa_server<-function() {
-  D<-new.env()
+pKa_server <- function() {
+  K <- new.env()
   sort_pka_data <- function(fls, nms, ph, mf) {
     lapply(fls, asyr::new) %>%
       lapply(., function(u) {
@@ -29,11 +29,12 @@ pKa_server<-function() {
     
     
     observeEvent(input$filein, {
+      K <- new.env()
       unlink(list.files(pattern = "temp.pdf$|Rmd$|csv$"))
-              D$Dat <- sort_pka_data(input$filein$datapath,
-                           input$filein$names,
-                           input$pHFluor,
-                           input$MFBatch)
+      K$Dat <- sort_pka_data(input$filein$datapath,
+                             input$filein$names,
+                             input$pHFluor,
+                             input$MFBatch)
     })
     
     output$BB <- downloadHandler(
@@ -42,15 +43,14 @@ pKa_server<-function() {
                "-",
                input$MFBatch,
                "-",
-               unique(D$Dat$Lot),
+               unique(K$Dat$Lot),
                "_pka.pdf")
       },
       content = function(file) {
-
-       # cat("does Dat(a) exist?: ")
+        # cat("does Dat(a) exist?: ")
         #print(exists('Dat'))
-       # print(head(Dat))
-        write.csv(D$Dat, "data.csv")
+        # print(head(Dat))
+        write.csv(K$Dat, "data.csv")
         template <-
           readLines(system.file("rmd/pKaTemplate.Rmd", package = "shinyStar"))
         alt_tempalte <-
@@ -61,10 +61,9 @@ pKa_server<-function() {
                    con =  "temp.Rmd",
                    sep = "\n")
         rmarkdown::render("temp.Rmd", output_file = file)
-        rm(D)
+        # rm(K)
       }
     )
     
   })
 }
-
