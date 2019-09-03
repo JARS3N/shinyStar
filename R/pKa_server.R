@@ -62,7 +62,7 @@ pKa_server <- function() {
                    sep = "\n")
         #rmarkdown::render("temp.Rmd", output_file = file)
         # rm(K)
-        write.csv(mtcars,"test.csv",row.names=F)
+        write.csv(mtcars,file,row.names=F)
       }
     )
     
