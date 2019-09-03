@@ -1,6 +1,6 @@
 pKa_server <- function() {
 
-
+dir.create("temp")
 #K <- new.env()
 sort_pka_data <- function(fls, nms, ph, mf) {
   lapply(fls, asyr::new) %>%
@@ -50,7 +50,7 @@ shinyServer(function(input, output, session) {
              "_pka.pdf")
     },
     content = function(file) {
-      write.csv(K$Dat, "data.csv")
+      write.csv(K$Dat, "temp/data.csv")
       template <-
         readLines(system.file("rmd/pKaTemplate.Rmd", package = "shinyStar"))
       alt_tempalte <-
@@ -58,9 +58,9 @@ shinyServer(function(input, output, session) {
              input$pHFluor,
              gsub("XBATCHX", input$MFBatch, template))
       writeLines(text = alt_tempalte,
-                 con =  "temp.Rmd",
+                 con =  "temp/temp.Rmd",
                  sep = "\n")
-      rmarkdown::render("temp.Rmd", output_file = file)
+      rmarkdown::render("temp/temp.Rmd", output_file = file)
       
       
     }
