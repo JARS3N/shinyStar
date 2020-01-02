@@ -29,7 +29,7 @@ shinyServer(function(input, output,session) {
     q<-dbSendQuery(conn,q_str)
     DF<-dbFetch(q)
     dbDisconnect(conn)
-      dir<-"//lexnas03a-vs1-nas-s1lkq.agilent.com/LSAG/Seahorse Bioscience Chicopee/SH Consumables Labeling"
+      dir<-"/mnt/LSAG/Seahorse Bioscience Chicopee/SH Consumables Labeling"
       outfl<-'CartridgeDatabase.xlsx'
       write.xlsx(DF,file=file.path(dir,outfl))
     print(DF)
