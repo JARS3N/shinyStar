@@ -5,7 +5,7 @@ library(openxlsx)
 conn<- adminKraken::con_mysql()
 query<-paste0("SELECT DISTINCT(Lot_Num) from barcodelotview;")
 send<-dbSendQuery(conn,query)
-Lots<-dbFetch(send)
+Lots<-dbFetch(send,n=-1)
 dbDisconnect(conn)
 
 
@@ -15,7 +15,7 @@ shinyServer(function(input, output,session) {
   })
 
 
-  updateSelectInput(session,'Lot',choices=c("N/A",Lots$Lot_Num))
+  updateSelectInput(session,'Lot',choices=c("N/A",rev(Lots$Lot_Num)))
 
   observeEvent(input$Lot,{
     if(input$Lot!="N/A"){
