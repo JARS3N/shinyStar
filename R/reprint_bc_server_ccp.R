@@ -30,7 +30,7 @@ shinyServer(function(input, output,session) {
     dbDisconnect(conn)
       dir<-"G:/Seahorse Bioscience Chicopee/SH Consumables Labeling"
       outfl<-'CartridgeDatabase.xlsx'
-      write.xlsx(DF,file=file.path(dir,outfl))
+      write.xlsx(DF,file=file.path(dir,outfl),sheetName = "Matrix")
     print(DF)
     }
   })
