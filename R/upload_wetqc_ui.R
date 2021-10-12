@@ -5,7 +5,7 @@ shinyUI(
   pageWithSidebar(
     # Application title
     headerPanel("Upload WetQC Data"),
-    p("App will close after uploading to Database")
+    p("App will close after uploading to Database"),
     sidebarPanel(
       actionButton("goButton", "Select Directory",icon = icon("upload")),
       actionButton("Quit", "Exit",icon=icon("times-circle")),
