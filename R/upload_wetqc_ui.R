@@ -11,12 +11,11 @@ shinyUI(
       actionButton("exprt", 'Export as CSV',icon = icon("table")),
       br(),
       br(),
-      actionButton('upload',"Database Upload",icon=icon('send')),
+      actionButton('upload',"Database Upload(app will close after)",icon=icon('send')),
       strong('Highlighted runs are not uploaded to the database'),
       width=1.5
     ),
     mainPanel(
-       p("App will close after uploading to Database"),
       tabsetPanel(
         tabPanel("Selection & Validation",
                  DT::dataTableOutput('foo'),
