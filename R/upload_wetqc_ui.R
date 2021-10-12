@@ -5,7 +5,6 @@ shinyUI(
   pageWithSidebar(
     # Application title
     headerPanel("Upload WetQC Data"),
-    p("App will close after uploading to Database"),
     sidebarPanel(
       actionButton("goButton", "Select Directory",icon = icon("upload")),
       actionButton("Quit", "Exit",icon=icon("times-circle")),
@@ -17,6 +16,7 @@ shinyUI(
       width=1.5
     ),
     mainPanel(
+       p("App will close after uploading to Database"),
       tabsetPanel(
         tabPanel("Selection & Validation",
                  DT::dataTableOutput('foo'),
