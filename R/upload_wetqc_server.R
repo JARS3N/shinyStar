@@ -60,7 +60,7 @@ upload_wetqc_server <- function (){
                     E$Truth <- rep(T, length(E$DATA))
                     ############}
                     output$foo2 <-DT::renderDataTable(dplyr::bind_rows(E$DATA))
-                    E$sum_tbl <- asyr::wetQC_meta_summary_tbl(procd)
+                    E$sum_tbl <- asyr::wetQC_meta_summary_tbl(E$procd)
  
                         E$sum_tbl$use <- T
                         output$foo <- DT::renderDataTable(
