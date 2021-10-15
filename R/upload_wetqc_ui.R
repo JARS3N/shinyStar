@@ -18,8 +18,8 @@ shinyUI(
     mainPanel(
       tabsetPanel(
         tabPanel("Selection & Validation",
-                 DT::dataTableOutput('foo'),
-                 actionButton("desel", 'Deselect All Rows',icon = icon("undo"))
+                 DT::dataTableOutput('foo') #,
+                 #actionButton("desel", 'Deselect All Rows',icon = icon("undo"))
         ),
         tabPanel("Terms",
                  strong('pH.Status & O2.Status'),
