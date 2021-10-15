@@ -135,7 +135,7 @@ upload_wetqc_server <- function() {
     observeEvent(input$upload, {
       n_data <- seq_along(sum_tbl$use)
       upload_index <- n_data[!n_data %in% input$foo_rows_selected]
-      asyr::upload_process_summary(sum_tbl[index, ])
+      asyr::upload_process_summary(sum_tbl[upload_index, ])
       lapply(DATA[upload_index], asyr::wet_qc_upload)
       ###########################
       E <- new.env()
