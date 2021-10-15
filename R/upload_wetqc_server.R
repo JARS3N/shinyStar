@@ -1,4 +1,4 @@
-upload_wetqc_server2 <- function() {
+upload_wetqc_server <- function() {
   require(shiny)
   require(RMySQL)
   require(asyr)
