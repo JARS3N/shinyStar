@@ -1,12 +1,22 @@
-upload_wetqc_server <- function () {
+upload_wetqc_server2 <- function() {
   require(shiny)
   require(RMySQL)
   require(asyr)
   require(XML)
   require(DT)
   require(dplyr)
+  
+  
   shinyServer(function(input, output, session) {
     E <- new.env()
+    
+    re_index <- function(data_seq, rows_selected) {
+      data_seq[!data_seq %in% rows_selected]
+    }
+    
+    observeEvent(input$Quit, {
+      stopApp(returnValue = invisible())
+    })
     
     session$onSessionEnded(function() {
       stopApp()
@@ -23,9 +33,7 @@ upload_wetqc_server <- function () {
       )
     
     output$foo <- clean_selections
-    observeEvent(input$Quit, {
-      stopApp(returnValue = invisible())
-    })
+    
     
     observeEvent(input$goButton, {
       output$MSG <- renderText("Ready")
@@ -48,20 +56,24 @@ upload_wetqc_server <- function () {
         
         DATA <- lapply(procd, function(u) {
           df <- u$calibration
-          df$Lot <-  as.character(u$lot)
+          df$Lot <-
+            paste0(as.character(u$type), as.character(u$lot))
           df$sn <- as.numeric(u$sn)
           df$Inst <- as.numeric(u$Inst)
+          df$O2.LED <- as.character(df$O2.LED)
+          df$pH.Status <- as.character(df$O2.LED)
           df$pH.IntialReferenceDelta <- NULL
           df$O2.IntialReferenceDelta <- NULL
           df[order(df$Well),]
         })
         
         E$dim_data <- seq_along(DATA)
-        E$index <- E$dim_data
+        E$index <- re_index(E$dim_data, input$foo_rows_selected)
         output$foo2 <- DT::renderDataTable(dplyr::bind_rows(DATA))
         ######################################################################
         
         sum_tbl <- asyr::wetQC_meta_summary_tbl(procd)
+        
         if (exists("sum_tbl")) {
           sum_tbl$use <- T
           output$foo <- DT::renderDataTable(
@@ -74,68 +86,64 @@ upload_wetqc_server <- function () {
             rownames = F
           )
         }
-        ##
-        observeEvent(input$foo_rows_selected, {
-          sum_tbl
-          sum_tbl$use <- T
-          sum_tbl$use[input$foo_rows_selected] <- F
-          output$foo <- DT::renderDataTable(
-            sum_tbl,
-            selection = list(selected = input$foo_rows_selected),
-            server = F,
-            options = list(dom = "t", pageLength = nrow(sum_tbl)),
-            rownames = FALSE
-          )
-          
-          E$neg_index <- -1 * input$foo_rows_selected
-          if (is.null(input$foo_rows_selected)) {
-            E$index <- E$dim_data
-          } else{
-            E$index <- E$dim_data[E$neg_index]
-          }
-          print(E$index)
-        })
-        #
-        observeEvent(input$desel, {
-          sum_tbl$use <- T
-          output$foo <- DT::renderDataTable(
-            sum_tbl,
-            selection = list(selected = NULL),
-            server = F,
-            options = list(dom = "t", pageLength = nrow(sum_tbl)),
-            rownames = FALSE
-          )
-          E$index <- E$dim_data
-          
-        })
-        ############
-        observeEvent(input$exprt, {
-          OUT <- do.call("rbind", DATA[index])
-          OUT <- OUT[order(OUT$sn, OUT$Well, method = "radix"),]
-          export_names <- setNames(paste0(
-            paste0(
-              DIR,
-              "\\",
-              "WetQC_Lot_",
-              paste0(unique(OUT$Lot),
-                     collapse = "_")
-            ),
-            c(".csv", ".rds")
-          ), c("csv",
-               "rds"))
-          write.csv(OUT, export_names["csv"], row.names = F)
-          saveRDS(procd, export_names["rds"])
-        })
-        #########
-        observeEvent(input$upload, {
-          print(E$index)
-          print(sum_tbl[E$index,])
-          asyr::upload_process_summary(sum_tbl[index,])
-          lapply(DATA[index],asyr::wet_qc_upload)
-          ###########################
-          stopApp()
-        })
       }
+    })
+    
+    ##
+    observeEvent(input$foo_rows_selected, {
+      sum_tbl$use <- !seq_along(sum_tbl$use) %in% input$foo_rows_selected
+      E$index <-
+        re_index(seq_along(sum_tbl$use), input$foo_rows_selected)
+      output$foo <- DT::renderDataTable(
+        sum_tbl,
+        selection = list(selected = input$foo_rows_selected),
+        server = F,
+        options = list(dom = "t", pageLength = nrow(sum_tbl)),
+        rownames = FALSE
+      )
+    })
+    #
+    observeEvent(input$desel, {
+      sum_tbl$use <- T
+      output$foo <- DT::renderDataTable(
+        sum_tbl,
+        selection = list(selected = NULL),
+        server = F,
+        options = list(dom = "t", pageLength = nrow(sum_tbl)),
+        rownames = FALSE
+      )
+      E$index <- E$dim_data
+      
+    })
+    ############
+    observeEvent(input$exprt, {
+      OUT <- do.call("rbind", DATA[E$index])
+      OUT <- OUT[order(OUT$sn, OUT$Well, method = "radix"),]
+      export_names <- setNames(paste0(
+        paste0(DIR,
+               "\\",
+               "WetQC_Lot_",
+               paste0(unique(OUT$Lot),
+                      collapse = "_")),
+        c(".csv", ".rds")
+      ), c("csv",
+           "rds"))
+      write.csv(OUT, export_names["csv"], row.names = F)
+      saveRDS(procd, export_names["rds"])
+    })
+    #########
+    observeEvent(input$upload, {
+      n_data <- seq_along(sum_tbl$use)
+      upload_index <- n_data[!n_data %in% input$foo_rows_selected]
+      asyr::upload_process_summary(sum_tbl[index, ])
+      lapply(DATA[upload_index], asyr::wet_qc_upload)
+      ###########################
+      E <- new.env()
+      sum_tbl <- NULL
+      output$foo <- clean_selections
+      output$foo2 <- clean_selections
+      #stopApp()
     })
   })
 }
+
