@@ -55,7 +55,7 @@ upload_wetqc_server <- function (){
                         df[order(df$Well),]
                     })
                     #init values{
-                    E$dim_data <- seq_along(DATA)
+                    E$dim_data <- seq_along(E$DATA)
                     E$index <- E$dim_data
                     E$Truth <- rep(T, length(E$DATA))
                     ############}
