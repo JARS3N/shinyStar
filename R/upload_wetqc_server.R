@@ -47,7 +47,7 @@ upload_wetqc_server <- function (){
                             paste0(as.character(u$type),
                                    as.character(u$lot))
                         df$sn <- as.numeric(u$sn)
-                        df$Inst <- as.numeric(u$Inst)
+                        df$Inst <- as.numeric(gsub("[A-Z]","",u$Inst))
                         df$O2.LED <- as.character(df$O2.LED)
                         df$pH.Status <- as.character(df$O2.LED)
                         df$pH.IntialReferenceDelta <- NULL
