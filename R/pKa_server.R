@@ -4,7 +4,7 @@ pKa_server <- function() {
 sort_pka_data <- function(fls, nms, ph, mf) {
   lapply(fls, asyr::new) %>%
     lapply(., function(u) {
-      u$wetqc() %>%
+      u$munge_pka() %>%
         mutate(Lot = paste0(u$type, u$lot), sn = u$sn)
     }) %>%
     setNames(., nms) %>%
