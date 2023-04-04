@@ -104,7 +104,7 @@ upload_wetqc_server <- function (){
             
             
             observeEvent(input$exprt, {
-                E$OUT <- do.call("rbind", E$DATA[E$index])
+                E$OUT <- E$DATA[E$index] %>% dplyr::bind_rows()
                 E$OUT <-
                     E$OUT[order(E$OUT$sn, E$OUT$Well, method = "radix"),]
                 E$export_names <- setNames(paste0(
