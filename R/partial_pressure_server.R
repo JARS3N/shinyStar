@@ -20,8 +20,8 @@ partial_pressure_server<-function(){
             theme_bw()+
             ylab('mmHg')+
             xlab('Temp(C)')+
-            geom_text(aes(x=input$TMP,y=outliers::partial_pressure_ox(input$TMP,input$ATM),
-                          label=round(outliers::partial_pressure_ox(input$TMP,input$ATM),3)),vjust = -0.6,
+            geom_text(aes(x=input$TMP,y=asyr::partial_pressure_ox(input$TMP,input$ATM),
+                          label=round(asyr::partial_pressure_ox(input$TMP,input$ATM),3)),vjust = -0.6,
                       family = "Times New Roman",size=10)+
             ylim(c(min(selectedData()$PP),max(selectedData()$PP)+1))
         })
