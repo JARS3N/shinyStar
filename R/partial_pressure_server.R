@@ -11,7 +11,7 @@ partial_pressure_server<-function(){
           selectedData <- reactive({
             data.frame(
               temp=0:40,
-              PP=sapply(0:40,outliers::partial_pressure_ox,atm=input$ATM)
+              PP=sapply(0:40,asyr::partial_pressure_ox,atm=input$ATM)
             )
           })
           ggplot(selectedData(),aes(temp,PP))+
