@@ -28,7 +28,7 @@ upload_wetqc_server <- function (){
                 output$MSG <- renderText("Ready")
                 if (input$goButton > 0) {
                     output$MSG <- renderText("Select Directory")
-                    E$DIR <- choose.dir()
+                    E$DIR <- utils::choose.dir()
                     output$MSG <- renderText("Munging Data...")
                     E$files <-
                         list.files(
